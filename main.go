@@ -1,7 +1,9 @@
+// hacker-news searches the top stories on https://news.ycombinator.com and outputs the title and link that match a regex
 package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -15,11 +17,12 @@ var (
 	base           = "https://hacker-news.firebaseio.com"
 	item           = base + "/v0/item/"
 	stories        = base + "/v0/topstories.json"
-	storiesToMatch = " [Gg][Oo](lang)? | [Nn]ode(.js)?"
 	wg             sync.WaitGroup
 	link           = color.New(color.FgCyan).Add(color.Underline)
 	title          = color.New(color.FgWhite)
 	mutex          = &sync.Mutex{}
+	defaultRegexp  = " [Gg][Oo](lang)? | [Nn]ode(.js)?"
+	storiesToMatch string
 )
 
 type story struct {
@@ -28,6 +31,9 @@ type story struct {
 }
 
 func main() {
+	flag.StringVar(&storiesToMatch, "regexp", defaultRegexp, "The regular expression to match Hacker News stories on")
+	flag.Parse()
+
 	resp, err := http.Get(stories)
 	if err != nil {
 		fmt.Println(err)
@@ -51,7 +57,7 @@ func main() {
 func getStory(stry int) {
 	wg.Add(1)
 	defer wg.Done()
-	resp, err := http.Get(item + strconv.Itoa(stry) + ".json")
+	resp, err := http.Get(buildStoryURL(stry))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -72,4 +78,8 @@ func matchStory(story story) {
 		link.Printf("\t%s\n", story.URL)
 		mutex.Unlock()
 	}
+}
+
+func buildStoryURL(stry int) string {
+	return item + strconv.Itoa(stry) + ".json"
 }
