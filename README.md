@@ -5,9 +5,9 @@ Searches the top stories on [Hacker News](https://news.ycombinator.com) and outp
 
 ``` go get github.com/coyle/hacker-news```
 
-### Build
+### dependencies
 
-``` go install github.com/fatih/color```
+``` go get github.com/fatih/color```
 
 ### Run
 
