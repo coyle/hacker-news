@@ -7,7 +7,7 @@ Searches the top stories on [Hacker News](https://news.ycombinator.com) and outp
 
 ### Build
 
-``` go get github.com/fatih/color```
+``` go install github.com/fatih/color```
 
 ### Run
 
