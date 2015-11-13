@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/fatih/color"
@@ -20,8 +21,10 @@ var (
 	wg             sync.WaitGroup
 	link           = color.New(color.FgCyan).Add(color.Underline)
 	title          = color.New(color.FgWhite)
+	bg             = color.New(color.BgHiYellow)
 	mutex          = &sync.Mutex{}
-	defaultRegexp  = " [Gg][Oo](lang)? | [Nn]ode(.js)?"
+	defaultRegexp  = ".*"
+	cnt            = 0
 	storiesToMatch string
 )
 
@@ -73,9 +76,14 @@ func getStory(stry int) {
 
 func matchStory(story story) {
 	if matched, _ := regexp.MatchString(storiesToMatch, story.Title); matched {
+		if story.URL == "" {
+			return
+		}
 		mutex.Lock()
-		title.Printf("\n\t%s\n", story.Title)
+		cnt++
+		title.Printf("\n%d.\t%s\n", cnt, story.Title)
 		link.Printf("\t%s\n", story.URL)
+		title.Printf("\n%s\n\n", strings.Repeat("_", 100))
 		mutex.Unlock()
 	}
 }
