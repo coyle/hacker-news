@@ -11,7 +11,11 @@ Searches the top stories on [Hacker News](https://news.ycombinator.com) and outp
 
 ### Run
 
-```go run main.go -regexp="regexp to match on stories"```
+```go run main.go```
+
+optional flags:
+
+```  -regexp="regexp to match on stories" ```
 
 Ex. ```go run main.go -regexp=[Nn]ode(.js)?```
 
